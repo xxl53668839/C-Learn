@@ -13,12 +13,12 @@ int num;
     {
         if (num%2==0) //如果num的餘數等於0時
         {
-            printf("%d為偶數",num); //顯示為偶數
+            printf("%d為偶數\n",num); //顯示為偶數
         }
 
         else //反之
         {
-            printf("%d為奇數",num); //顯示為奇數
+            printf("%d為奇數\n",num); //顯示為奇數
         }
 
     printf("請輸入任意數字: \n");
