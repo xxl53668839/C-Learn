@@ -5,16 +5,20 @@ int main()
     unsigned short i;
     unsigned short data;
    
-   printf("請輸入16進制:");
-    scanf("%d\n",&data);
-   for (i=0; i<8; i++)
+    printf("請輸入16進制:");
+    scanf("%x",&data);
+   for (i=0; i<16; i++)
     {
-        if ((data ^ crc) & 0x0001)
-            crc = (crc >> 1) ^ 0x8408;
+        if ((data^crc)&0x0001)
+            {
+                crc = (crc>>1)^0x8408; 
+            }
         else
-            crc = crc >> 1;
+            {
+                crc = crc>>1;
+            }
     }
-    printf("%#x\n",crc);
+    printf("CRC值: %#x\n",crc);
 printf("程式結束\n");
 return 0;
 }
