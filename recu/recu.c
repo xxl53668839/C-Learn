@@ -10,10 +10,10 @@ int main()
 
 void recu(int n) //(int n)是函數的參數n，並接收上方傳入的1
 {
-    printf("等級%d\n",n);
+    printf("等級%d\n",n); 
     if(n<4) //n接收到1，所以n小於4，所以進入迴圈
     {
         recu(n+1);
-        printf("等級%d\n",n);
+        printf("等級%d\n",n); 
     }
 }
