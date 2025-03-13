@@ -10,7 +10,7 @@ int main()
                       {0,0,0,0,0}};
     int week;
     int class;
-    int class_no;
+    int class_No;
     int i,j;
     int sum;
     sum=0;
@@ -21,8 +21,10 @@ int main()
         printf("請輸入第幾堂課(1到6):");
         scanf("%d",&class);
 
-    class_no=lesson[class--][week--]; //因為電腦是從0開始，而使用者是從1開始，故減1
-    switch(class_no)
+    while (week!=0 && class!=0)
+    {
+    class_No=lesson[week-1][class-1]; //因為電腦是從0開始，而使用者是從1開始，故減1
+    switch(class_No)
     {
         case 0:printf("這節沒課\n"); //0表示沒有課程
             goto PLUS;
@@ -46,8 +48,10 @@ int main()
         sum++;
     }
 
-    printf("本週總計:%d節課\n",sum);
-
+    printf("本週總計:%d節課\n",sum); 
+    break;
+    }
+printf("程式結束\n");
 return 0;
 }
 
