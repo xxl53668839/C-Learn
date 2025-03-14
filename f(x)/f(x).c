@@ -5,8 +5,9 @@ int f(int x)
     {
         
         int a[10];
-        int sum,i,x;
+        int sum,i;
+        sum=0;
 
         sum=sum+A[i]*pow(x,i);
-        return 
+        return sum;
     }
