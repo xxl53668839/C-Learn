@@ -1,4 +1,4 @@
-#ifndef AD_HHHH
+#ifndef AD_HHHH 
 #define AD_HHHH
 
 #include <stdio.h>
@@ -15,7 +15,7 @@
 //  PUBLIC Function
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-float convert_AD_to_Voltage(int AD_Value[],int data_no) ; 
+float convert_AD_to_Voltage(int AD_Value[],int data_no) ;  //
 
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
