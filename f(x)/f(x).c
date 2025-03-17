@@ -3,11 +3,12 @@
 
 int f(int x,int a[],int n)//定義函數f(x,a,n)
     {
+
         int sum=0;//sum初始化
         int i;
         for(i=0;i<n;i++)
         {
-            sum=sum+a[i]*pow(x,i);//意思是sum+a陣列乘以x的i次方
+            sum+=a[i]*pow(x,i);//意思是sum+a陣列乘以x的i次方
         }
         return sum;//回傳sum，f(x,a,n)的值=sum
     }
