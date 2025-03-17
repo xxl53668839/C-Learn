@@ -15,7 +15,7 @@ int f(int x,int a[],int n)//定義函數f(x,a,n)
 int main()
 {
     int n,x,i;
-    int a[10];
+    int a[10]; 
     printf("\n請輸入n值:");
     scanf("%d",&n);
 
