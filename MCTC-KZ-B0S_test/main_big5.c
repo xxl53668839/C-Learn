@@ -2,7 +2,7 @@
 #include <windows.h>
 #include <string.h>
 
-// CRC16 è¨ˆç®—å‡½å¼
+// CRC16 ­pºâ¨ç¦¡
 unsigned short calculateCRC16(const unsigned char *data, int length) {
     unsigned short crc = 0xFFFF;
     for (int i = 0; i < length; i++) {
@@ -18,12 +18,12 @@ unsigned short calculateCRC16(const unsigned char *data, int length) {
     return crc;
 }
 
-// ç™¼é€å’Œæ¥æ”¶è³‡æ–™å‡½å¼
+// µo°e©M±µ¦¬¸ê®Æ¨ç¦¡
 int rs485_send_receive(HANDLE hSerial, const char *inputBuffer, unsigned char *receiveBuffer) {
     unsigned char sendData[256];
     DWORD bytesWritten, bytesRead;
 
-    // å°‡ 16 é€²åˆ¶å­—ä¸²è½‰æ›ç‚ºä½å…ƒçµ„é™£åˆ—
+    // ±N 16 ¶i¨î¦r¦êÂà´«¬°¦ì¤¸²Õ°}¦C
     int inputLength = strlen(inputBuffer);
     int sendLength = 0;
     for (int i = 0; i < inputLength; i += 3) {
@@ -31,45 +31,45 @@ int rs485_send_receive(HANDLE hSerial, const char *inputBuffer, unsigned char *r
         sendLength++;
     }
 
-    // è¨ˆç®— CRC16
+    // ­pºâ CRC16
     unsigned short crc = calculateCRC16(sendData, sendLength);
 
-    // å°‡ CRC æ ¡é©—ç¢¼é™„åŠ åˆ°è³‡æ–™å°¾ç«¯ (ä½å­—ç¯€åœ¨å‰)
+    // ±N CRC ®ÕÅç½Xªş¥[¨ì¸ê®Æ§Àºİ (§C¦r¸`¦b«e)
     sendData[sendLength] = (unsigned char)(crc & 0xFF);
     sendData[sendLength + 1] = (unsigned char)((crc >> 8) & 0xFF);
 
-    // ç™¼é€è³‡æ–™ (åŒ…å« CRC æ ¡é©—ç¢¼)
+    // µo°e¸ê®Æ (¥]§t CRC ®ÕÅç½X)
     if (!WriteFile(hSerial, sendData, sendLength + 2, &bytesWritten, NULL)) {
-        printf("Err! å¾COMé€£æ¥åŸ ä¸­å¯«å…¥éŒ¯èª¤!\n");
+        printf("Err! ±qCOM³s±µ°ğ¤¤¼g¤J¿ù»~!\n");
         return 1;
     }
 
-    // é¡¯ç¤ºç™¼é€çš„è³‡æ–™ (16 é€²åˆ¶æ ¼å¼)
-    printf("ç™¼é€è³‡æ–™: ");
+    // Åã¥Üµo°eªº¸ê®Æ (16 ¶i¨î®æ¦¡)
+    printf("µo°e¸ê®Æ: ");
     for (int i = 0; i < sendLength + 2; i++) {
         printf("%02X ", sendData[i]);
     }
     printf("(CRC: 0x%04X)\n", crc);
 
-    // æ¸…é™¤ COM Port ç·©è¡å€å’ŒéŒ¯èª¤
+    // ²M°£ COM Port ½w½Ä°Ï©M¿ù»~
     PurgeComm(hSerial, PURGE_RXCLEAR | PURGE_TXCLEAR);
     ClearCommError(hSerial, NULL, NULL);
 
-    // æ¥æ”¶å›è¦†
+    // ±µ¦¬¦^ÂĞ
     if (!ReadFile(hSerial, receiveBuffer, sizeof(receiveBuffer) , &bytesRead, NULL)) {
-        printf("Err!å¾ COM é€£æ¥åŸ è®€å–éŒ¯èª¤!\n");
+        printf("Err!±q COM ³s±µ°ğÅª¨ú¿ù»~!\n");
         return 1;
     }
 
-    // é¡¯ç¤ºæ¥æ”¶åˆ°çš„è³‡æ–™ (16 é€²åˆ¶æ ¼å¼)
+    // Åã¥Ü±µ¦¬¨ìªº¸ê®Æ (16 ¶i¨î®æ¦¡)
     if (bytesRead > 0) {
-        printf("å›è¦†è³‡æ–™: ");
+        printf("¦^ÂĞ¸ê®Æ: ");
         for (int i = 0; i < bytesRead; i++) {
             printf("%02X ", receiveBuffer[i]);
         }
         printf("\n");
     } else {
-        printf("Err!æ²’æœ‰æ”¶åˆ°å›è¦†è³‡æ–™!\n");
+        printf("Err!¨S¦³¦¬¨ì¦^ÂĞ¸ê®Æ!\n");
     }
 
     return 0;
@@ -83,14 +83,14 @@ int main() {
     char inputBuffer[256];
     int choice, subChoice;
 
-    // é–‹å•Ÿ COM Port
+    // ¶}±Ò COM Port
     hSerial = CreateFile("\\\\.\\COM3", GENERIC_READ | GENERIC_WRITE, 0, NULL, OPEN_EXISTING, 0, NULL);
     if (hSerial == INVALID_HANDLE_VALUE) {
         printf("Error opening COM port!\n");
         return 1;
     }
 
-    // è¨­å®š COM Port åƒæ•¸
+    // ³]©w COM Port °Ñ¼Æ
     dcbSerialParams.DCBlength = sizeof(dcbSerialParams);
     if (!GetCommState(hSerial, &dcbSerialParams)) {
         printf("Error getting COM state!\n");
@@ -107,7 +107,7 @@ int main() {
         return 1;
     }
 
-    // è¨­å®šé€¾æ™‚
+    // ³]©w¹O®É
     timeouts.ReadIntervalTimeout = 50;
     timeouts.ReadTotalTimeoutConstant = 50;
     timeouts.ReadTotalTimeoutMultiplier = 10;
@@ -119,253 +119,253 @@ int main() {
         return 1;
     }
 
-    // èœå–®è¿´åœˆ
+    // µæ³æ°j°é
     while (1) {
-        // é¡¯ç¤ºä¸»èœå–®
-        printf("\nMCTC-KZ-B0S æ¸¬è©¦å·¥å…·\n");
-        printf("1. æ¨™æº–æ¸¬è©¦æ¨¡å¼\n");
-        printf("2. è‡ªå®šç¾©æ¸¬è©¦æ¨¡å¼\n");
-        printf("0. é€€å‡ºç¨‹å¼\n");
-        printf("è¼¸å…¥1~2é¸æ“‡æ¨¡å¼: ");
+        // Åã¥Ü¥Dµæ³æ
+        printf("\nMCTC-KZ-B0S ´ú¸Õ¤u¨ã\n");
+        printf("1. ¼Ğ·Ç´ú¸Õ¼Ò¦¡\n");
+        printf("2. ¦Û©w¸q´ú¸Õ¼Ò¦¡\n");
+        printf("0. °h¥Xµ{¦¡\n");
+        printf("¿é¤J1~2¿ï¾Ü¼Ò¦¡: ");
 
-        // å–å¾—ä½¿ç”¨è€…é¸æ“‡
+        // ¨ú±o¨Ï¥ÎªÌ¿ï¾Ü
         scanf("%d", &choice);
-        getchar(); // æ¸…é™¤æ›è¡Œç¬¦è™Ÿ
+        getchar(); // ²M°£´«¦æ²Å¸¹
 
-        // æ ¹æ“šé¸æ“‡åŸ·è¡Œç›¸æ‡‰åŠŸèƒ½
+        // ®Ú¾Ú¿ï¾Ü°õ¦æ¬ÛÀ³¥\¯à
         switch (choice) {
             case 1:
-                // æ¨™æº–æ¸¬è©¦å­èœå–®
+                // ¼Ğ·Ç´ú¸Õ¤lµæ³æ
                 while (1) {
-                    printf("\næ¨™æº–æ¸¬è©¦æ¨¡å¼\n");
-                    printf("1. ç³»çµ±ç‹€æ…‹ \n");
-                    printf("2. é–€ç‹€æ…‹ \n");
-                    printf("3. ç•¶å‰æ¨“å±¤ \n");
-                    printf("4. é–‹é—œé–€æŒ‡ä»¤ \n");
-                    printf("5. ç™»è¨˜å…§å« \n");
-                    printf("6. AGVæ§åˆ¶æ¨¡å¼\n");
-                    printf("0. å›ä¸Šä¸€é \n");
-                    printf("è«‹é¸æ“‡æ¸¬è©¦é …ç›®: ");
+                    printf("\n¼Ğ·Ç´ú¸Õ¼Ò¦¡\n");
+                    printf("1. ¨t²Îª¬ºA \n");
+                    printf("2. ªùª¬ºA \n");
+                    printf("3. ·í«e¼Ó¼h \n");
+                    printf("4. ¶}Ãöªù«ü¥O \n");
+                    printf("5. µn°O¤º¥s \n");
+                    printf("6. AGV±±¨î¼Ò¦¡\n");
+                    printf("0. ¦^¤W¤@­¶\n");
+                    printf("½Ğ¿ï¾Ü´ú¸Õ¶µ¥Ø: ");
                     scanf("%d", &subChoice);
                     getchar();
 
                     switch (subChoice) {
                         case 1:
-                            // ç³»çµ±ç‹€æ…‹æ¸¬è©¦
-                            printf("\nåŸ·è¡Œç³»çµ±ç‹€æ…‹æ¸¬è©¦...\n");
+                            // ¨t²Îª¬ºA´ú¸Õ
+                            printf("\n°õ¦æ¨t²Îª¬ºA´ú¸Õ...\n");
                             if (rs485_send_receive(hSerial, "01 03 9C 41 00 01", receiveBuffer) != 0) {
-                                printf("æ¸¬è©¦å¤±æ•—ã€‚\n");
+                                printf("´ú¸Õ¥¢±Ñ¡C\n");
                             }
                             break;
                         case 2:
-                            // é–€ç‹€æ…‹æ¸¬è©¦
-                            printf("\nåŸ·è¡Œé–€ç‹€æ…‹æ¸¬è©¦...\n");
+                            // ªùª¬ºA´ú¸Õ
+                            printf("\n°õ¦æªùª¬ºA´ú¸Õ...\n");
                             if (rs485_send_receive(hSerial, "01 03 9C 43 00 01", receiveBuffer) != 0) {
-                                printf("æ¸¬è©¦å¤±æ•—ã€‚\n");
+                                printf("´ú¸Õ¥¢±Ñ¡C\n");
                             }
                             break;
                         case 3:
-                            // ç•¶å‰æ¨“å±¤æ¸¬è©¦
-                            printf("\nåŸ·è¡Œç•¶å‰æ¨“å±¤æ¸¬è©¦...\n");
+                            // ·í«e¼Ó¼h´ú¸Õ
+                            printf("\n°õ¦æ·í«e¼Ó¼h´ú¸Õ...\n");
                             if (rs485_send_receive(hSerial, "01 03 9C 45 00 01", receiveBuffer) != 0) {
-                                printf("æ¸¬è©¦å¤±æ•—ã€‚\n");
+                                printf("´ú¸Õ¥¢±Ñ¡C\n");
                             }
                             break;
                         case 4:
-                            // é–‹é—œé–€æŒ‡ä»¤å­èœå–®
+                            // ¶}Ãöªù«ü¥O¤lµæ³æ
                             while (1) {
-                                printf("\né–‹é—œé–€æŒ‡ä»¤\n");
-                                printf("1. å‰é–€é–‹é–€ \n");
-                                printf("2. å‰é–€é—œé–€ \n");
-                                printf("3. å¾Œé–€é–‹é–€ \n");
-                                printf("4. å¾Œé–€é—œé–€ \n");
-                                printf("0. å›ä¸Šä¸€é \n");
-                                printf("è«‹é¸æ“‡æŒ‡ä»¤: ");
+                                printf("\n¶}Ãöªù«ü¥O\n");
+                                printf("1. «eªù¶}ªù \n");
+                                printf("2. «eªùÃöªù \n");
+                                printf("3. «áªù¶}ªù \n");
+                                printf("4. «áªùÃöªù \n");
+                                printf("0. ¦^¤W¤@­¶\n");
+                                printf("½Ğ¿ï¾Ü«ü¥O: ");
                                 scanf("%d", &subChoice);
                                 getchar();
             
                                 switch (subChoice) {
                                     case 1:
-                                        // å‰é–€é–‹é–€
-                                        printf("\nåŸ·è¡Œå‰é–€é–‹é–€æŒ‡ä»¤...\n");
+                                        // «eªù¶}ªù
+                                        printf("\n°õ¦æ«eªù¶}ªù«ü¥O...\n");
                                         if (rs485_send_receive(hSerial, "01 06 9C 56 00 03", receiveBuffer) != 0) {
-                                            printf("æŒ‡ä»¤åŸ·è¡Œå¤±æ•—ã€‚\n");
+                                            printf("«ü¥O°õ¦æ¥¢±Ñ¡C\n");
                                         }
                                         break;
                                     case 2:
-                                        // å‰é–€é—œé–€
-                                        printf("\nåŸ·è¡Œå‰é–€é—œé–€æŒ‡ä»¤...\n");
+                                        // «eªùÃöªù
+                                        printf("\n°õ¦æ«eªùÃöªù«ü¥O...\n");
                                         if (rs485_send_receive(hSerial, "01 06 9C 56 00 04", receiveBuffer) != 0) {
-                                            printf("æŒ‡ä»¤åŸ·è¡Œå¤±æ•—ã€‚\n");
+                                            printf("«ü¥O°õ¦æ¥¢±Ñ¡C\n");
                                         }
                                         break;
                                     case 3:
-                                        // å¾Œé–€é–‹é–€
-                                        printf("\nåŸ·è¡Œå¾Œé–€é–‹é–€æŒ‡ä»¤...\n");
+                                        // «áªù¶}ªù
+                                        printf("\n°õ¦æ«áªù¶}ªù«ü¥O...\n");
                                         if (rs485_send_receive(hSerial, "01 06 9C 56 00 05", receiveBuffer) != 0) {
-                                            printf("æŒ‡ä»¤åŸ·è¡Œå¤±æ•—ã€‚\n");
+                                            printf("«ü¥O°õ¦æ¥¢±Ñ¡C\n");
                                         }
                                         break;
                                     case 4:
-                                        // å¾Œé–€é—œé–€
-                                        printf("\nåŸ·è¡Œå¾Œé–€é—œé–€æŒ‡ä»¤...\n");
+                                        // «áªùÃöªù
+                                        printf("\n°õ¦æ«áªùÃöªù«ü¥O...\n");
                                         if (rs485_send_receive(hSerial, "01 06 9C 56 00 06", receiveBuffer) != 0) {
-                                            printf("æŒ‡ä»¤åŸ·è¡Œå¤±æ•—ã€‚\n");
+                                            printf("«ü¥O°õ¦æ¥¢±Ñ¡C\n");
                                         }
                                         break;
                                     case 0:
-                                        // å›ä¸Šä¸€é 
+                                        // ¦^¤W¤@­¶
                                         break;
                                     default:
-                                        printf("ç„¡æ•ˆçš„é¸æ“‡ï¼Œè«‹é‡æ–°è¼¸å…¥ã€‚\n");
+                                        printf("µL®Äªº¿ï¾Ü¡A½Ğ­«·s¿é¤J¡C\n");
                                         break;
                                 }
                                 if (subChoice == 0) {
-                                    break; // è·³å‡ºå­èœå–®è¿´åœˆ
+                                    break; // ¸õ¥X¤lµæ³æ°j°é
                                 }
                             }
                             break;
 
                             case 5:
-                            // å…§å«æŒ‡ä»¤å­èœå–®
+                            // ¤º¥s«ü¥O¤lµæ³æ
                             while (1) {
-                                printf("\nå…§å«æŒ‡ä»¤\n");
-                                printf("1. ç¬¬1å±¤ \n");
-                                printf("2. ç¬¬3å±¤ \n");
-                                printf("3. ç¬¬5å±¤ \n");
-                                printf("4. ç¬¬7å±¤ \n");
-                                printf("5. ç¬¬9å±¤ \n");
-                                printf("0. å›ä¸Šä¸€é \n");
-                                printf("è«‹é¸æ“‡æŒ‡ä»¤: ");
+                                printf("\n¤º¥s«ü¥O\n");
+                                printf("1. ²Ä1¼h \n");
+                                printf("2. ²Ä3¼h \n");
+                                printf("3. ²Ä5¼h \n");
+                                printf("4. ²Ä7¼h \n");
+                                printf("5. ²Ä9¼h \n");
+                                printf("0. ¦^¤W¤@­¶\n");
+                                printf("½Ğ¿ï¾Ü«ü¥O: ");
                                 scanf("%d", &subChoice);
                                 getchar();
             
                                 switch (subChoice) {
                                     case 1:
-                                        // å…§å«1C
-                                        printf("\nåŸ·è¡Œå…§å«æŒ‡ä»¤:ç¬¬1å±¤...\n");
+                                        // ¤º¥s1C
+                                        printf("\n°õ¦æ¤º¥s«ü¥O:²Ä1¼h...\n");
                                         if (rs485_send_receive(hSerial, "01 06 9C 99 00 01", receiveBuffer) != 0) {
-                                            printf("æŒ‡ä»¤åŸ·è¡Œå¤±æ•—ã€‚\n");
+                                            printf("«ü¥O°õ¦æ¥¢±Ñ¡C\n");
                                         }
                                         break;
                                     case 2:
-                                        // å…§å«3C
-                                        printf("\nåŸ·è¡Œå…§å«æŒ‡ä»¤:ç¬¬3å±¤...\n");
+                                        // ¤º¥s3C
+                                        printf("\n°õ¦æ¤º¥s«ü¥O:²Ä3¼h...\n");
                                         if (rs485_send_receive(hSerial, "01 06 9C 99 00 03", receiveBuffer) != 0) {
-                                            printf("æŒ‡ä»¤åŸ·è¡Œå¤±æ•—ã€‚\n");
+                                            printf("«ü¥O°õ¦æ¥¢±Ñ¡C\n");
                                         }
                                         break;
                                     case 3:
-                                        // å…§å«5C
-                                        printf("\nåŸ·è¡Œå…§å«æŒ‡ä»¤:ç¬¬5å±¤...\n");
+                                        // ¤º¥s5C
+                                        printf("\n°õ¦æ¤º¥s«ü¥O:²Ä5¼h...\n");
                                         if (rs485_send_receive(hSerial, "01 06 9C 99 00 05", receiveBuffer) != 0) {
-                                            printf("æŒ‡ä»¤åŸ·è¡Œå¤±æ•—ã€‚\n");
+                                            printf("«ü¥O°õ¦æ¥¢±Ñ¡C\n");
                                         }
                                         break;
                                     case 4:
-                                        // å…§å«7C
-                                        printf("\nåŸ·è¡Œå…§å«æŒ‡ä»¤:ç¬¬7å±¤...\n");
+                                        // ¤º¥s7C
+                                        printf("\n°õ¦æ¤º¥s«ü¥O:²Ä7¼h...\n");
                                         if (rs485_send_receive(hSerial, "01 06 9C 99 00 07", receiveBuffer) != 0) {
-                                            printf("æŒ‡ä»¤åŸ·è¡Œå¤±æ•—ã€‚\n");
+                                            printf("«ü¥O°õ¦æ¥¢±Ñ¡C\n");
                                         }
                                         break;
                                     case 5:
-                                        //å…§å«9C
-                                        printf("\nåŸ·è¡Œå…§å«æŒ‡ä»¤:ç¬¬9å±¤...\n");
+                                        //¤º¥s9C
+                                        printf("\n°õ¦æ¤º¥s«ü¥O:²Ä9¼h...\n");
                                         if (rs485_send_receive(hSerial, "01 06 9C 99 00 09", receiveBuffer) != 0) {
-                                            printf("åŸ·è¡Œå‘½ä»¤å¤±æ•—ã€‚\n");
+                                            printf("°õ¦æ©R¥O¥¢±Ñ¡C\n");
                                         }
                                         break;
                                     case 0:
-                                        // å›ä¸Šä¸€é 
+                                        // ¦^¤W¤@­¶
                                         break;
                                     default:
-                                        printf("ç„¡æ•ˆçš„é¸æ“‡ï¼Œè«‹é‡æ–°è¼¸å…¥ã€‚\n");
+                                        printf("µL®Äªº¿ï¾Ü¡A½Ğ­«·s¿é¤J¡C\n");
                                         break;
                                 }
                                 if (subChoice == 0) {
-                                    break; // è·³å‡ºå­èœå–®è¿´åœˆ
+                                    break; // ¸õ¥X¤lµæ³æ°j°é
                                 }
                             }
                             break;
 
                             case 6:
-                            // AGVæŒ‡ä»¤å­èœå–®
+                            // AGV«ü¥O¤lµæ³æ
                             while (1) {
-                                printf("\nAGVæŒ‡ä»¤\n");
-                                printf("1. é€²å…¥AGVç‹€æ…‹ \n");
-                                printf("2. é€€å‡ºAGVç‹€æ…‹ \n");
-                                printf("3. AGVç‹€æ…‹ç¢ºèª \n");
-                                printf("0. å›ä¸Šä¸€é \n");
-                                printf("è«‹é¸æ“‡æŒ‡ä»¤: ");
+                                printf("\nAGV«ü¥O\n");
+                                printf("1. ¶i¤JAGVª¬ºA \n");
+                                printf("2. °h¥XAGVª¬ºA \n");
+                                printf("3. AGVª¬ºA½T»{ \n");
+                                printf("0. ¦^¤W¤@­¶\n");
+                                printf("½Ğ¿ï¾Ü«ü¥O: ");
                                 scanf("%d", &subChoice);
                                 getchar();
             
                                 switch (subChoice) {
                                     case 1:
-                                        // é€²å…¥AGVç‹€æ…‹
-                                        printf("\nè«‹æ±‚é€²å…¥AGVç‹€æ…‹...\n");
+                                        // ¶i¤JAGVª¬ºA
+                                        printf("\n½Ğ¨D¶i¤JAGVª¬ºA...\n");
                                         if (rs485_send_receive(hSerial, "01 06 9C A4 00 01", receiveBuffer) != 0) {
-                                            printf("æŒ‡ä»¤åŸ·è¡Œå¤±æ•—ã€‚\n");
+                                            printf("«ü¥O°õ¦æ¥¢±Ñ¡C\n");
                                         }
                                         break;
                                     case 2:
-                                        // é€€å‡ºAGVç‹€æ…‹
-                                        printf("\nè«‹æ±‚é€€å‡ºAGVç‹€æ…‹...\n");
+                                        // °h¥XAGVª¬ºA
+                                        printf("\n½Ğ¨D°h¥XAGVª¬ºA...\n");
                                         if (rs485_send_receive(hSerial, "01 06 9C A4 00 00", receiveBuffer) != 0) {
-                                            printf("æŒ‡ä»¤åŸ·è¡Œå¤±æ•—ã€‚\n");
+                                            printf("«ü¥O°õ¦æ¥¢±Ñ¡C\n");
                                         }
                                         break;
                                     case 3:
-                                        // AGVç‹€æ…‹ç¢ºèª
-                                        printf("\nåŸ·è¡ŒAGVç‹€æ…‹ç¢ºèª...\n");
+                                        // AGVª¬ºA½T»{
+                                        printf("\n°õ¦æAGVª¬ºA½T»{...\n");
                                         if (rs485_send_receive(hSerial, "01 03 9C A5 00 01", receiveBuffer) != 0) {
-                                            printf("æŒ‡ä»¤åŸ·è¡Œå¤±æ•—ã€‚\n");
+                                            printf("«ü¥O°õ¦æ¥¢±Ñ¡C\n");
                                         }
                                         break;
                                     case 0:
-                                        // å›ä¸Šä¸€é 
+                                        // ¦^¤W¤@­¶
                                         break;
                                     default:
-                                        printf("ç„¡æ•ˆçš„é¸æ“‡ï¼Œè«‹é‡æ–°è¼¸å…¥ã€‚\n");
+                                        printf("µL®Äªº¿ï¾Ü¡A½Ğ­«·s¿é¤J¡C\n");
                                         break;
                                 }
                                 if (subChoice == 0) {
-                                    break; // è·³å‡ºå­èœå–®è¿´åœˆ
+                                    break; // ¸õ¥X¤lµæ³æ°j°é
                                 }
                             }
                             break;
                     
                         case 0:
-                            // å›ä¸Šä¸€é 
+                            // ¦^¤W¤@­¶
                             break;
                         default:
-                            printf("ç„¡æ•ˆçš„é¸æ“‡ï¼Œè«‹é‡æ–°è¼¸å…¥ã€‚\n");
+                            printf("µL®Äªº¿ï¾Ü¡A½Ğ­«·s¿é¤J¡C\n");
                             break;
                     }
                     if (subChoice == 0) {
-                        break; // è·³å‡ºå­èœå–®è¿´åœˆ
+                        break; // ¸õ¥X¤lµæ³æ°j°é
                     }
                 }
                 break;
             case 2:
-                // è‡ªå®šç¾© 16 é€²åˆ¶è¼¸å…¥æ¨¡å¼
-                printf("è«‹è¼¸å…¥é€šè¨ŠæŒ‡ä»¤ (16é€²åˆ¶å­—ä¸²): ");
+                // ¦Û©w¸q 16 ¶i¨î¿é¤J¼Ò¦¡
+                printf("½Ğ¿é¤J³q°T«ü¥O (16¶i¨î¦r¦ê): ");
                 fgets(inputBuffer, sizeof(inputBuffer), stdin);
                 inputBuffer[strcspn(inputBuffer, "\n")] = '\0';
 
-                // ç™¼é€å’Œæ¥æ”¶è³‡æ–™
+                // µo°e©M±µ¦¬¸ê®Æ
                 if (rs485_send_receive(hSerial, inputBuffer, receiveBuffer) != 0) {
-                    printf("æ¸¬è©¦å¤±æ•—ã€‚\n");
+                    printf("´ú¸Õ¥¢±Ñ¡C\n");
                 }
                 break;
             case 0:
-                // é€€å‡ºç¨‹å¼
+                // °h¥Xµ{¦¡
                 CloseHandle(hSerial);
-                printf("ç¨‹å¼çµæŸ\n");
+                printf("µ{¦¡µ²§ô\n");
                 return 0;
             default:
-                printf("ç„¡æ•ˆçš„é¸æ“‡ï¼Œè«‹é‡æ–°è¼¸å…¥ã€‚\n");
+                printf("µL®Äªº¿ï¾Ü¡A½Ğ­«·s¿é¤J¡C\n");
                 break;
         }
     }

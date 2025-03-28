@@ -56,7 +56,7 @@ int rs485_send_receive(HANDLE hSerial, const char *inputBuffer, unsigned char *r
     ClearCommError(hSerial, NULL, NULL);
 
     // 接收回覆
-    if (!ReadFile(hSerial, receiveBuffer, sizeof(receiveBuffer) - 1, &bytesRead, NULL)) {
+    if (!ReadFile(hSerial, receiveBuffer, sizeof(receiveBuffer) , &bytesRead, NULL)) {
         printf("Err!從 COM 連接埠讀取錯誤!\n");
         return 1;
     }
@@ -143,6 +143,7 @@ int main() {
                     printf("3. 當前樓層 (01 03 9C 45 00 01)\n");
                     printf("4. 開關門指令 (01 06 9C 56 HH HH)\n");
                     printf("5. 登記內叫 (01 06 9C 99 HH HH)\n");
+                    printf("6. AGV控制模式\n");
                     printf("0. 回上一頁\n");
                     printf("請選擇測試項目: ");
                     scanf("%d", &subChoice);
@@ -226,7 +227,7 @@ int main() {
                             break;
 
                             case 5:
-                            // 內叫門指令子菜單
+                            // 內叫指令子菜單
                             while (1) {
                                 printf("\n內叫指令\n");
                                 printf("1. 第1層 (01 06 9C 99 00 01)\n");
@@ -273,6 +274,53 @@ int main() {
                                         printf("\n執行內叫指令:第9層...\n");
                                         if (rs485_send_receive(hSerial, "01 06 9C 99 00 09", receiveBuffer) != 0) {
                                             printf("執行命令失敗。\n");
+                                        }
+                                        break;
+                                    case 0:
+                                        // 回上一頁
+                                        break;
+                                    default:
+                                        printf("無效的選擇，請重新輸入。\n");
+                                        break;
+                                }
+                                if (subChoice == 0) {
+                                    break; // 跳出子菜單迴圈
+                                }
+                            }
+                            break;
+
+                            case 6:
+                            // AGV指令子菜單
+                            while (1) {
+                                printf("\nAGV指令\n");
+                                printf("1. 進入AGV狀態 (01 06 9C A4 00 01)\n");
+                                printf("2. 退出AGV狀態 (01 06 9C A4 00 00)\n");
+                                printf("3. AGV狀態確認 (01 03 9C A5 00 00)\n");
+                                printf("0. 回上一頁\n");
+                                printf("請選擇指令: ");
+                                scanf("%d", &subChoice);
+                                getchar();
+            
+                                switch (subChoice) {
+                                    case 1:
+                                        // 進入AGV狀態
+                                        printf("\n請求進入AGV狀態...\n");
+                                        if (rs485_send_receive(hSerial, "01 06 9C A4 00 01", receiveBuffer) != 0) {
+                                            printf("指令執行失敗。\n");
+                                        }
+                                        break;
+                                    case 2:
+                                        // 退出AGV狀態
+                                        printf("\n請求退出AGV狀態...\n");
+                                        if (rs485_send_receive(hSerial, "01 06 9C A4 00 00", receiveBuffer) != 0) {
+                                            printf("指令執行失敗。\n");
+                                        }
+                                        break;
+                                    case 3:
+                                        // AGV狀態確認
+                                        printf("\n執行AGV狀態確認...\n");
+                                        if (rs485_send_receive(hSerial, "01 03 9C A5 00 01", receiveBuffer) != 0) {
+                                            printf("指令執行失敗。\n");
                                         }
                                         break;
                                     case 0:
